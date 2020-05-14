@@ -17,6 +17,18 @@ import math
 ##   (list of int): list of community assignments for each vertex
 ##
 ## Note: Assume input matrix mat is binary and symmetric
+
+#Input: adjacency matrix, and number of communities K
+#Output: array of community assignments
+
+#set components = [ [all vertices] ]
+#while number of components < K:
+#    - compute edge betweenness (edge_betweenness)
+#    - remove edge with highest edge betweenness
+#    - find components in the graph (get_components)
+#return an array with community assignments 
+
+
 def girvan_newman(mat, K):
     num_vertices = mat.shape[0]
     
@@ -46,7 +58,16 @@ def girvan_newman(mat, K):
             end = min(start+vertices_per_component, num_vertices-1)
             components.append(np.arange(end, start, -1))
             
+            edg_mx = cur_eb.max()
+            result = np.where(cur_eb == edg_mx)
+            cur_eb[result] = 0
+            work_mat[result] = 0 
+            components = get_components(work_mat)
+            
     return components_to_assignment(components, num_vertices)
+
+
+
 
 ## Turn list of components to list of assignments
 ##
